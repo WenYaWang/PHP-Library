@@ -1,4 +1,5 @@
 <?php
+namespace framework\base;
 
 class Table{
     private $_rows;
@@ -79,18 +80,43 @@ class Table{
                                 $temp = $data[$srcIdx];
                                 $data[$srcIdx] = $data[$schIdx];
                                 $data[$schIdx] = $temp;
+                            }else if($data[$srcIdx][$colname] == $data[$schIdx][$colname]){
+                                for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
+                                    $colname = $arrayKey[$colIndex];
+                                    if($data[$srcIdx][$colname] > $data[$schIdx][$colname]){
+                                        $temp = $data[$srcIdx];
+                                        $data[$srcIdx] = $data[$schIdx];
+                                        $data[$schIdx] = $temp;
+                                    }
+                                }
                             }
                         }else if(is_string($data[$srcIdx][$colname]) || is_string($data[$schIdx][$colname])){
                             $srcText = $data[$srcIdx][$colname];
                             $schText = $data[$schIdx][$colname];
-                            for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
-                                if(ord($srcText[$txtIdx]) > ord($schText[$txtIdx])){
-                                    $temp = $data[$srcIdx];
-                                    $data[$srcIdx] = $data[$schIdx];
-                                    $data[$schIdx] = $temp;
-                                    break;
-                                }else if(ord($srcText[$txtIdx]) < ord($schText[$txtIdx])){
-                                    break;
+                            if($srcText != $schText){
+                                for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
+                                    if(ord($srcText[$txtIdx]) > ord($schText[$txtIdx])){
+                                        $temp = $data[$srcIdx];
+                                        $data[$srcIdx] = $data[$schIdx];
+                                        $data[$schIdx] = $temp;
+                                        break;
+                                    }else if(ord($srcText[$txtIdx]) < ord($schText[$txtIdx])){
+                                        break;
+                                    }
+                                }
+                            }else{
+                                for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
+                                    $colname = $arrayKey[$colIndex];
+                                    for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
+                                        if(ord($srcText[$txtUdx]) > ord($schText[$txtIdx])){
+                                            $temp = $data[$srcIdx];
+                                            $data[$srcIdx] = $data[$schIdx];
+                                            $data[$schIdx] = $temp;
+                                            break;
+                                        }else if(ord($srcText[$txtIdx]) < ord($schText[$txtIdx])){
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -108,18 +134,43 @@ class Table{
                                 $temp = $data[$srcIdx];
                                 $data[$srcIdx] = $data[$schIdx];
                                 $data[$schIdx] = $temp;
+                            }else if($data[$srcIdx][$colname] == $data[$schIdx][$colname]){
+                                for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
+                                    $colname = $arrayKey[$colIndex];
+                                    if($data[$srcIdx][$colname] < $data[$schIdx][$colname]){
+                                        $temp = $data[$srcIdx];
+                                        $data[$srcIdx] = $data[$schIdx];
+                                        $data[$schIdx] = $temp;
+                                    }
+                                }
                             }
                         }else if(is_string($data[$srcIdx][$colname]) || is_string($data[$schIdx][$colname])){
                             $srcText = $data[$srcIdx][$colname];
                             $schText = $data[$schIdx][$colname];
-                            for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
-                                if(ord($srcText[$txtIdx]) < ord($schText[$txtIdx])){
-                                    $temp = $data[$srcIdx];
-                                    $data[$srcIdx] = $data[$schIdx];
-                                    $data[$schIdx] = $temp;
-                                    break;
-                                }else if(ord($srcText[$txtIdx]) > ord($schText[$txtIdx])){
-                                    break;
+                            if($srcText != $schText){
+                                for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
+                                    if(ord($srcText[$txtIdx]) < ord($schText[$txtIdx])){
+                                        $temp = $data[$srcIdx];
+                                        $data[$srcIdx] = $data[$schIdx];
+                                        $data[$schIdx] = $temp;
+                                        break;
+                                    }else if(ord($srcText[$txtIdx]) > ord($schText[$txtIdx])){
+                                        break;
+                                    }
+                                }
+                            }else{
+                                for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
+                                    $colname = $arrayKey[$colIndex];
+                                    for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
+                                        if(ord($srcText[$txtUdx]) > ord($schText[$txtIdx])){
+                                            $temp = $data[$srcIdx];
+                                            $data[$srcIdx] = $data[$schIdx];
+                                            $data[$schIdx] = $temp;
+                                            break;
+                                        }else if(ord($srcText[$txtIdx]) < ord($schText[$txtIdx])){
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -176,7 +227,7 @@ class Table{
 
     // Set layout columns(String or Array)
     public function setColumns($value){
-        if(is_string($value)) 
+        if(is_string($value))
             $this->_columns = array($value);
         else if(is_array($value))
             $this->_columns = $value;
@@ -217,11 +268,12 @@ class Table{
     // Create pivot table
     public function createPivotTable(){
         try{
-            // if(count($this->rawdata) == 0) return;
+            if(count($this->_rawdata) == 0) return;
 
             // Get index entries
             $data_rows    = $this->getIndependentItems($this->_rows);
             $data_columns = $this->getIndependentItems($this->_columns);
+
             $this->sortMultiArray($data_rows, "ASC");
             $this->sortMultiArray($data_columns, "ASC");
 
@@ -284,7 +336,7 @@ class Table{
             }
             echo "  </thead>";
             echo "  <tbody>";
-            
+
             $newRow = true;
             foreach($rows as $rowIdx => $rowItems){
                 $value = explode("|", $rowIdx);
@@ -323,5 +375,4 @@ class Table{
         }
     }
 }
-
 ?>
