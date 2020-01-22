@@ -1,5 +1,4 @@
 <?php
-namespace framework\base;
 
 class Table{
     private $_rows;
@@ -369,7 +368,6 @@ class Table{
             }
             echo "  </tbody>";
             echo "<table>";
-            
         }catch(Exception $e){
 
         }
