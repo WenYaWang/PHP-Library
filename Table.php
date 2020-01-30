@@ -1,5 +1,4 @@
 <?php
-
 class Table{
     private $_rows;
     private $_columns;
