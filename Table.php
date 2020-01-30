@@ -106,8 +106,10 @@ class Table{
                             }else{
                                 for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
                                     $colname = $arrayKey[$colIndex];
+                                    $srcText = $data[$srcIdx][$colname];
+                                    $schText = $data[$schIdx][$colname];
                                     for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
-                                        if(ord($srcText[$txtUdx]) > ord($schText[$txtIdx])){
+                                        if(ord($srcText[$txtIdx]) > ord($schText[$txtIdx])){
                                             $temp = $data[$srcIdx];
                                             $data[$srcIdx] = $data[$schIdx];
                                             $data[$schIdx] = $temp;
@@ -136,6 +138,8 @@ class Table{
                             }else if($data[$srcIdx][$colname] == $data[$schIdx][$colname]){
                                 for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
                                     $colname = $arrayKey[$colIndex];
+                                    $srcText = $data[$srcIdx][$colname];
+                                    $schText = $data[$schIdx][$colname];
                                     if($data[$srcIdx][$colname] < $data[$schIdx][$colname]){
                                         $temp = $data[$srcIdx];
                                         $data[$srcIdx] = $data[$schIdx];
@@ -161,7 +165,7 @@ class Table{
                                 for($colIndex = $keyIdx + 1; $colIndex < count($arrayKey); $colIndex++){
                                     $colname = $arrayKey[$colIndex];
                                     for($txtIdx = 0; $txtIdx < min(strlen($data[$srcIdx][$colname]), strlen($data[$schIdx][$colname])); $txtIdx++){
-                                        if(ord($srcText[$txtUdx]) > ord($schText[$txtIdx])){
+                                        if(ord($srcText[$txtIdx]) > ord($schText[$txtIdx])){
                                             $temp = $data[$srcIdx];
                                             $data[$srcIdx] = $data[$schIdx];
                                             $data[$schIdx] = $temp;
@@ -368,6 +372,7 @@ class Table{
             }
             echo "  </tbody>";
             echo "<table>";
+            
         }catch(Exception $e){
 
         }
