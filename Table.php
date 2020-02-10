@@ -186,10 +186,10 @@ class Table{
     private function inArray($parent = array(), $child){
         $result = false;
         if(is_array($child)){
-            foreach($child as $child_items){
+            foreach($child as $child_index => $child_items){
                 $result = false;
-                foreach($parent as $parent_items){
-                    if($parent_items == $child_items){
+                foreach($parent as $parent_index => $parent_items){
+                    if($parent_items == $child_items && $parent_index == $child_index){
                         $result = true;
                         break;
                     }
@@ -199,8 +199,8 @@ class Table{
                     break;
             }
         }else if(is_string($child)){
-            foreach($parent as $parent_items){
-                if($parent_items == $child){
+            foreach($parent as $parent_index => $parent_items){
+                if($parent_items == $child && $parent_index == $child_index){
                     $result = true;
                     break;
                 }
