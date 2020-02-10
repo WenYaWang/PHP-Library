@@ -313,7 +313,7 @@ class Table{
                     $content[$rowname][$colname] = "";
                     foreach($this->_rawdata as $index => $value){
                         if($this->inArray($value, $drows) && $this->inArray($value, $dcols))
-                            $content[$rowname][$colname] = $value[$this->_contents];
+                            $content[$rowname][$colname] .= $value[$this->_contents];
                     }
                 }
             }
