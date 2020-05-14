@@ -1,4 +1,6 @@
 <?php
+namespace framework\base;
+
 class Table{
     private $_rows;
     private $_columns;
@@ -276,9 +278,10 @@ class Table{
             $data_rows    = $this->getIndependentItems($this->_rows);
             $data_columns = $this->getIndependentItems($this->_columns);
 
-            $this->sortMultiArray($data_rows, "ASC");
-            $this->sortMultiArray($data_columns, "ASC");
-
+            if(count($this->_columns) > 1 || count($this->_rows) > 1){
+                $this->sortMultiArray($data_rows, "ASC");
+                $this->sortMultiArray($data_columns, "ASC");
+            }
             // Rows layout
             $rows = array();
             foreach($data_rows as $drows){
@@ -303,6 +306,7 @@ class Table{
                 }
             }
 
+
             // Fill data to content layout
             $content = array();
             foreach($data_rows as $drIndex => $drows){
@@ -311,9 +315,12 @@ class Table{
                 foreach($data_columns as $dcIndex => $dcols){
                     $colname = implode("|", $dcols);
                     $content[$rowname][$colname] = "";
+
                     foreach($this->_rawdata as $index => $value){
-                        if($this->inArray($value, $drows) && $this->inArray($value, $dcols))
+                        if($this->inArray($value, $drows) && $this->inArray($value, $dcols) ){
+                            //echo "[$rowname][$colname] = ".$value[$this->_contents]."<br>";
                             $content[$rowname][$colname] .= $value[$this->_contents];
+                        }
                     }
                 }
             }
@@ -346,9 +353,9 @@ class Table{
                     echo "<tr>";
                     $newRow = false;
                 }
-                
+
                 echo "<th id='$rowIdx' rowspan='".$rowItems[array_key_first($rowItems)]."'>".$value[count($value) - 1]."</th>";
-                
+
                 if(array_key_first($rowItems) == $this->_rows[count($this->_rows) - 1]){
                     foreach($content[$rowIdx] as $fieldIdx => $fieldItem){
                         echo "<td id='$fieldIdx'>";
@@ -362,7 +369,7 @@ class Table{
                             echo round($fieldItem, 2);
                         else
                             echo $fieldItem;
-                        
+
                         echo "</td>";
                     }
                     echo "</tr>";
@@ -370,8 +377,8 @@ class Table{
                 }
             }
             echo "  </tbody>";
-            echo "<table>";
-            
+            echo "</table>";
+
         }catch(Exception $e){
 
         }
