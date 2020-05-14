@@ -19,6 +19,46 @@
     vertical-align: middle;
 }
 
+.tabs-blue{
+    color: #FFFFFF; 
+    background-color: #0271BC;
+}
+
+.nav-tabs-page{
+    display: block;
+    background-color: white;
+    box-shadow: 0px 0px 10px 1px #A8A8A8;
+    border-radius: 5px;
+}
+
+.nav-tabs-page > .tabs-header{
+    padding: 0.3rem 1em;
+}
+
+.tabs-title{
+    display: inline-block;
+    font-size: 18px;
+}
+
+ul.tabs-list{
+    list-style: none;
+    display: inline-block;
+    padding: 0px;
+    margin-bottom: 0px;
+    margin-top: 8px;
+}
+
+ul.tabs-list li{
+    display: inline-block;
+    background-color: white;
+    text-align: center;
+    padding: 0.6rem 2rem;
+}
+
+.align-right{
+    float: right;
+}
+
 ul.vertical-standard-list{
     list-style: none;
     display: inline-block;
@@ -79,11 +119,9 @@ table.table-standard{
 table.table-standard tr {
     height: 30px;
     line-height: 30px;
-    border-top: 1px solid #D4D4D4;
-    border-bottom: 1px solid #D4D4D4;
     cursor: pointer;
 }
-
+table.table-standard thead th{ background-color: white; }
 table.table-standard th, table.table-standard td { border: 1px solid #D4D4D4; }
 table.table-standard th:first-child, table.table-standard td:first-child { border-left: 0px; }
 table.table-standard td:nth-last-child(1), table.table-standard th:nth-last-child(1) { border-right: 0px; }
@@ -361,3 +399,63 @@ span.icon-assist-tool{
     top: 2px;
     bottom: 2px;
 }
+
+div.fixed-table{
+    width:              100%;
+    height:             80vh;
+    overflow:           hidden;
+    position:           relative;
+}
+
+div.fixed-tableRows, 
+div.fixed-tableColumns, 
+div.fixed-tableFields{
+    top:                0px;
+    left:               0px;
+    width:              calc(100% - 17.5px);
+    height:             calc(100% - 17.5px);
+    display:            inline-block;
+    position:           absolute;
+    pointer-events:     none;
+    overflow:           hidden;
+    z-index:            99;
+}
+
+div.fixed-tableFields{
+    z-index:            100;
+}
+
+div.fixed-tableRows table tbody,
+div.fixed-tableColumns thead,
+div.fixed-tableColumns tbody td,
+div.fixed-tableFields tbody,
+div.fixed-tableFields thead th:nth-child(n+2){
+    visibility:         hidden;
+}
+
+div.fixed-tableRows table tbody td{
+    border-color:       transparent;
+}
+
+div.fixed-tableColumns table thead,
+div.fixed-tableColumns table thead th,
+div.fixed-tableColumns table tbody td{
+    border-color:       transparent;
+}
+
+div.fixed-tableFields thead th:nth-child(n+2),
+div.fixed-tableFields tbody th,
+div.fixed-tableFields tbody td{
+    border-color:       transparent;
+}
+
+
+div.fixed-tableRows tbody td{
+    border-color:       transparent;
+}
+
+div.fixed-tableContent{
+    height:             inherit;
+    overflow:           scroll;
+}
+
