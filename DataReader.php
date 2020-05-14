@@ -68,6 +68,126 @@ class DataReader{
         return $dataColumns;
     }
 
+    public function Filter($columnName, $operator, $value){
+        $rawdata = array();
+        foreach($this->_rawdata as $rowIdx => $rows){
+            switch($operator){
+                case "=":
+                    switch(gettype($value)){
+                        case "array":
+                            foreach($value as $val){
+                                if($rows[$columnName] == $val){
+                                    array_push($rawdata, $rows);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "string":
+                        case "integer":
+                        case "float":
+                        case "double":
+                            if($rows[$columnName] == $value)
+                                array_push($rawdata, $rows);
+                            break;
+                    }
+                    break;
+                case "<":
+                    switch(gettype($value)){
+                        case "array":
+                            foreach($value as $val){
+                                if($rows[$columnName] < $val && is_numeric($val)){
+                                    array_push($rawdata, $rows);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "integer":
+                        case "float":
+                        case "double":
+                            if($rows[$columnName] < $value)
+                                array_push($rawdata, $rows);
+                            break;
+                    }
+                    break;
+                case "<=":
+                    switch(gettype($value)){
+                        case "array":
+                            foreach($value as $val){
+                                if($rows[$columnName] <= $val && is_numeric($val)){
+                                    array_push($rawdata, $rows);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "integer":
+                        case "float":
+                        case "double":
+                            if($rows[$columnName] <= $value)
+                                array_push($rawdata, $rows);
+                            break;
+                    }
+                    break;
+                case ">":
+                    switch(gettype($value)){
+                        case "array":
+                            foreach($value as $val){
+                                if($rows[$columnName] > $val && is_numeric($val)){
+                                    array_push($rawdata, $rows);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "integer":
+                        case "float":
+                        case "double":
+                            if($rows[$columnName] > $value)
+                                array_push($rawdata, $rows);
+                            break;
+                    }
+                    break;
+                case ">=":
+                    switch(gettype($value)){
+                        case "array":
+                            foreach($value as $val){
+                                if($rows[$columnName] >= $val && is_numeric($val)){
+                                    array_push($rawdata, $rows);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "integer":
+                        case "float":
+                        case "double":
+                            if($rows[$columnName] >= $value)
+                                array_push($rawdata, $rows);
+                            break;
+                    }
+                    break;
+                case "!=":
+                    switch(gettype($value)){
+                        case "array":
+                            foreach($value as $val){
+                                if($rows[$columnName] != $val){
+                                    array_push($rawdata, $rows);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "string":
+                        case "integer":
+                        case "float":
+                        case "double":
+                            if($rows[$columnName] != $value)
+                                array_push($rawdata, $rows);
+                            break;
+                    }
+                    break;
+            }
+        }
+        $dataReader = new DataReader($rawdata);
+        return $dataReader;
+    }
+
     public function toValue($columnsName = null, $rowsIdx = 1){
         if(count($this->_rawdata) == 1){
             return (float)$this->_rawdata[$rowsIdx - 1];
@@ -174,6 +294,49 @@ class DataReader{
                             case 2:
                                 $stack[0] = $this->First((int)$func_param[1])->Column((string)$func_param[0]);
                                 break;
+                            case 3:
+                                $objReader = $this->First((int)$func_param[1]);
+                                $isColumn = false;
+                                $columnName = "";
+                                $operator = "";
+                                $value = "";
+                                $filterVal = array();
+                                for($txtIndex = 0; $txtIndex < strlen($func_param[2]); $txtIndex++){
+                                    switch($func_param[2][$txtIndex]){
+                                        case "[":
+                                            $isColumn = true;
+                                            $columnName = "";
+                                            $operator = "";
+                                            $filterVal = array();
+                                            break;
+                                        case "]":
+                                            $isColumn = false;
+                                            break;
+                                        case "=":
+                                        case "<":
+                                        case ">":
+                                        case "!":
+                                            $operator .= $func_param[2][$txtIndex];
+                                            break;
+                                        case ",":
+                                            array_push($filterVal, $value);
+                                            break;
+                                        case "&":
+                                            $objReader = $objReader->Filter($columnName, $operator, $filterVal);
+                                            break;
+                                        default:
+                                            if($isColumn)
+                                                $columnName .= $func_param[2][$txtIndex];
+                                            else
+                                                $value .= $func_param[2][$txtIndex];
+                                            break;
+                                    }
+                                }
+
+                                array_push($filterVal, $value);                                
+                                $objReader = $objReader->Filter($columnName, $operator, $filterVal);
+                                $stack[0] = $objReader->Column((string)$func_param[0]);
+                                break;
                         }
                         break;
                     case "LAST":                    // Selection data collection
@@ -186,6 +349,49 @@ class DataReader{
                                 break;
                             case 2: 
                                 $stack[0] = $this->Last((int)$func_param[1])->Column((string)$func_param[0]);
+                                break;
+                            case 3:
+                                $objReader = $this->Last((int)$func_param[1]);
+                                $isColumn = false;
+                                $columnName = "";
+                                $operator = "";
+                                $value = "";
+                                $filterVal = array();
+                                for($txtIndex = 0; $txtIndex < strlen($func_param[2]); $txtIndex++){
+                                    switch($func_param[2][$txtIndex]){
+                                        case "[":
+                                            $isColumn = true;
+                                            $columnName = "";
+                                            $operator = "";
+                                            $filterVal = array();
+                                            break;
+                                        case "]":
+                                            $isColumn = false;
+                                            break;
+                                        case "=":
+                                        case "<":
+                                        case ">":
+                                        case "!":
+                                            $operator .= $func_param[2][$txtIndex];
+                                            break;
+                                        case ",":
+                                            array_push($filterVal, $value);
+                                            break;
+                                        case "&":
+                                            $objReader = $objReader->Filter($columnName, $operator, $filterVal);
+                                            break;
+                                        default:
+                                            if($isColumn)
+                                                $columnName .= $func_param[2][$txtIndex];
+                                            else
+                                                $value .= $func_param[2][$txtIndex];
+                                            break;
+                                    }
+                                }
+
+                                array_push($filterVal, $value);
+                                $objReader = $objReader->Filter($columnName, $operator, $filterVal);
+                                $stack[0] = $objReader->Column((string)$func_param[0]);
                                 break;
                         }
                         break;
@@ -416,6 +622,9 @@ class DataReader{
                 }
             }
         }
+        if($value != ""){
+            array_unshift($stack, $value);
+        }
 
         $res = true;
         foreach($stack as $item){
@@ -431,34 +640,43 @@ class DataReader{
         $formula = str_replace('&gt;', '>', $formula);
         $formula = str_replace('&lt;', '<', $formula);
 
+        $chrCount = 0;
         $leftFormula = '';
         $rightFormula = '';
-        $charIdx = (strpos($formula, '=') !== false)?2:1;
         $operator = '';
 
-        if(strpos($formula, '>') !== false)
-            $leftFormula = substr($formula, 0, strpos($formula, '>'));
-        else if(strpos($formula, '<') !== false)
-            $leftFormula = substr($formula, 0, strpos($formula, '<'));
-        else if(strpos($formula, '=') !== false)
-            $leftFormula = substr($formula, 0, strpos($formula, '='));
-        else if(strpos($formula, '!') !== false)
-            $leftFormula = substr($formula, 0, strpos($formula, '!'));
-
-        if(strpos($formula, '>') !== false){
-            $operator = substr($formula, strpos($formula, '>'), $charIdx);
-            $rightFormula = substr($formula, strpos($formula, '>') + $charIdx);
-        }else if(strpos($formula, '<') !== false){
-            $operator = substr($formula, strpos($formula, '<'), $charIdx);
-            $rightFormula = substr($formula, strpos($formula, '<') + $charIdx);
-        }else if(strpos($formula, '=') !== false){
-            $operator = substr($formula, strpos($formula, '='), $charIdx);
-            $rightFormula = substr($formula, strpos($formula, '=') + $charIdx);
-        }else if(strpos($formula, '!') !== false){
-            $operator = substr($formula, strpos($formula, '!'), $charIdx);
-            $rightFormula = substr($formula, strpos($formula, '!') + $charIdx);
+        for($txtIndex = 0; $txtIndex < strlen($formula); $txtIndex++){
+            switch($formula[$txtIndex]){
+                case "(":
+                    $chrCount++;
+                    if($operator == ""){
+                        $leftFormula .= $formula[$txtIndex];
+                    }else{
+                        $rightFormula .= $formula[$txtIndex];
+                    }
+                    break;
+                case ")":
+                    $chrCount--;
+                    if($operator == ""){
+                        $leftFormula .= $formula[$txtIndex];
+                    }else{
+                        $rightFormula .= $formula[$txtIndex];
+                    }
+                    break;
+                default:
+                    if($chrCount == 0 && ($formula[$txtIndex] == "=" || $formula[$txtIndex] == "<" || $formula[$txtIndex] == ">")){
+                        $operator .= $formula[$txtIndex];
+                    }else{
+                        if($operator == ""){
+                            $leftFormula .= $formula[$txtIndex];
+                        }else{
+                            $rightFormula .= $formula[$txtIndex];
+                        }
+                    } 
+                    break;
+            }
         }
-
+        
         $result = false;
         $leftFormula = $this->AlgorithmOperation(trim($leftFormula));
         $rightFormula = $this->AlgorithmOperation(trim($rightFormula));
@@ -483,7 +701,6 @@ class DataReader{
                 $result = $leftFormula != $rightFormula;
                 break;
         }
-        
         return $result;
     }
 
